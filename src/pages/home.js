@@ -3,31 +3,13 @@ import { useQuery, gql } from '@apollo/client';
 
 import Button from '../components/Button';
 import NoteFeed from '../components/NoteFeed';
-
-const GET_NOTES = gql`
-  query noteFeed($cursor: String) {
-    noteFeed(cursor: $cursor) {
-      cursor
-      hasNextPage
-      notes {
-        id
-        createdAt
-        content
-        favoriteCount
-        author {
-          username
-          id
-          avatar
-        }
-      }
-    }
-  }
-`;
+import { GET_NOTES } from '../gql/query';
 
 const Home = () => {
   const { data, loading, error, fetchMore } = useQuery(GET_NOTES);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {`${error}`}</p>;
+  if (data.noteFeed.notes.length === 0) return <p>There is no notes yet.</p>;
   return (
     <React.Fragment>
       <NoteFeed notes={data.noteFeed.notes} />
